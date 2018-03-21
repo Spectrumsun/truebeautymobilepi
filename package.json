@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production sequelize db:migrate && npm run build && node build/server",
+    "start": "cross-env NODE_ENV=production npm run build && node build/server",
     "dev": "cross-env NODE_ENV=development npm run dev:start",
     "dev:start": "nodemon --ignore lib --exec  babel-node server/server"
   },
