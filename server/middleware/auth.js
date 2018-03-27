@@ -7,7 +7,7 @@ class Auth {
   static verifyToken(req, res, next) {
     const token = req.body.token || req.query.token || req.headers.authorization;
     if (token) {
-      const secret = process.env.SECRET;
+      const secret = process.env.KEY;
       jwt.verify(token, secret, (err, data) => {
         if (err) {
           return res.status(401).json({
@@ -15,6 +15,7 @@ class Auth {
           });
         }
         req.user = data;
+        console.log(req.user);
         next();
       });
     } else {

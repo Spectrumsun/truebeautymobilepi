@@ -27,11 +27,9 @@ class Users {
     const pass = Buffer.from(user.password);
     const buf = Buffer.from(req.body.password);
     const verify = await pwd.verifySync(buf, pass);
-    console.log(typeof verify);
     if (!user || verify === securePassword.INVALID) {
       return res.status(400).json({
         message: 'Email or password not correct',
-        verify,
       });
     }
     res.status(200).json({
@@ -50,7 +48,37 @@ class Users {
       },
     });
   }
+
+  static async userprofile(req, res) {
+    const user = await User.findOne({ _id: req.user._id }, {
+      password: 0,
+      emailVerfication: 0,
+      emailVerficationExpires: 0,
+      resetPasswordToken: 0,
+      resetPasswordExpires: 0,
+    });
+    res.status(200).json({
+      message: 'successful',
+      user,
+    });
+  }
+
+
+  static async editprofile(req, res) {
+    const user = await User.findOne({ _id: req.user._id }, {
+      password: 0,
+      emailVerfication: 0,
+      emailVerficationExpires: 0,
+      resetPasswordToken: 0,
+      resetPasswordExpires: 0,
+    });
+    res.status(200).json({
+      message: 'successful',
+      user,
+    });
+  }
 }
+
 
 
 export default Users;

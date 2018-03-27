@@ -1,83 +1,143 @@
+import AddService from '../models/AddService';
+
 class Validate {
   static signup(req, res, next) {
-    req.sanitizeBody('name');
-    req.checkBody('username', 'You must supply a name!').notEmpty();
-    req.checkBody('phone', 'You must supply a Phone Number! 11 Digit').notEmpty().isLength({min:11});
-    req.checkBody('gender', 'You must supply your gender!').notEmpty();
-    req.checkBody('address', 'You must supply your address!').notEmpty();
-    req.checkBody('email', 'That Email is not valid!').isEmail();
-    req.sanitizeBody('email').normalizeEmail(
-        {
-        remove_dots: false, 
-        remove_extension: false, 
-        gmail_remove_subaddress: false 
-        }
-    );
-    req.checkBody('password', 'Password Cannot be Blank! Not less than five words').notEmpty().isLength({min:6});
-    req.checkBody('confirmPassword', 'Oops! Your passwords do not match').equals(req.body.password);
+    req.checkBody(
+      'username',
+      'You must supply a username!',
+    )
+      .notEmpty();
+    req.checkBody(
+      'phone',
+      'You must supply a Phone Number! 11 Digit',
+    )
+      .notEmpty().isLength({ min: 11 });
+    req.checkBody(
+      'address',
+      'You must supply your address!',
+    )
+      .notEmpty();
+    req.checkBody(
+      'email',
+      'That Email is not valid!',
+    )
+      .isEmail();
+    req.sanitizeBody('email').normalizeEmail({
+      remove_dots: false,
+      remove_extension: false,
+      gmail_remove_subaddress: false,
+    });
+    req.checkBody(
+      'password',
+      'Password Cannot be Blank! Not less than five charaters',
+    )
+      .notEmpty().isLength({ min: 6 });
+    req.checkBody(
+      'confirmPassword',
+      'Oops! Your passwords do not match',
+    )
+      .equals(req.body.password);
 
     const errors = req.validationErrors();
     if (errors) {
-      req.flash('Sign up error', errors.map(err => err.msg))
-      res.render('signup', {title: 'Signup', body: req.body, flashes: req.flash() })
+      const errs = errors.map(err => err.msg);
+      res.status(400).json({
+        message: 'Sign up Errors',
+        errs,
+      });
       return;
     }
     next();
   }
 
   static login(req, res, next) {
-   req.checkBody('email', 'That Email is not valid!').isEmail();
-   req.sanitizeBody('email').normalizeEmail(
-        {
-        remove_dots: false, 
-        remove_extension: false, 
-        gmail_remove_subaddress: false 
-        }
-    );
-    req.checkBody('password', 'Password Cannot be Blank!').notEmpty();
+    req.checkBody(
+      'email',
+      'That Email is not valid!',
+    )
+      .isEmail();
+    req.sanitizeBody('email')
+      .normalizeEmail({
+        remove_dots: false,
+        remove_extension: false,
+        gmail_remove_subaddress: false,
+      });
+    req.checkBody(
+      'password',
+      'Password Cannot be Blank!',
+    )
+      .notEmpty();
 
     const errors = req.validationErrors();
     if (errors) {
-       req.flash('login error', errors.map(err => err.msg))
-       res.render('login', {title: 'Login', body: req.body, flashes: req.flash() })
-      return; // stop the fn from running
+      const errs = errors.map(err => err.msg);
+      res.status(400).json({
+        message: 'Login Errors',
+        errs,
+      });
+      return;
     }
     next(); // there were no errors!
   }
 
-  
-
-   static addservice (req, res, next) {
-   req.checkBody('servicetype', 'That Email is not valid!').notEmpty();
-   req.sanitizeBody('email').normalizeEmail(
-        {
-        remove_dots: false, 
-        remove_extension: false, 
-        gmail_remove_subaddress: false 
-        }
-    );
-    req.checkBody('address', 'location Cannot be Blank!').notEmpty();
+  static businessLogin(req, res, next) {
+    req.checkBody(
+      'businessname',
+      'You must supply a username!',
+    ).notEmpty();
+    req.checkBody(
+      'location.address',
+      'You must supply a Address!',
+    ).notEmpty();
+    req.checkBody(
+      'location.coordinates',
+      'You must supply coordinates for your business Location!',
+    ).notEmpty();
+    req.checkBody(
+      'phone',
+      'You must supply a Phone Number! 11 Digit',
+    ).notEmpty().isLength({ min: 11 });
+    req.checkBody(
+      'email',
+      'That Email is not valid!',
+    ).isEmail();
+    req.sanitizeBody('email').normalizeEmail({
+      remove_dots: false,
+      remove_extension: false,
+      gmail_remove_subaddress: false,
+    });
+    req.checkBody(
+      'available',
+      'Available Cannot be Blank!',
+    ).notEmpty();
+    req.checkBody(
+      'password',
+      'Password Cannot be Blank! Not less than five charaters',
+    ).notEmpty().isLength({ min: 6 });
+    req.checkBody(
+      'confirmPassword',
+      'Oops! Your passwords do not match',
+    ).equals(req.body.password);
 
     const errors = req.validationErrors();
     if (errors) {
-       req.flash('Error!!', errors.map(err => err.msg))
-       res.render('addservice', {title: 'Add Service', body: req.body, flashes: req.flash() })
-      return; // stop the fn from running
+      const errs = errors.map(err => err.msg);
+      res.status(400).json({
+        message: 'Sign up Errors',
+        errs,
+      });
+      return;
     }
-    next(); // there were no errors!
+    next();
   }
 
- static resetpassword(req, res, next) {
-   req.checkBody('password', 'password cannot be empty!').notEmpty();
-   req.checkBody('confirmPassword', 'Oops! Your passwords do not match').equals(req.body.password);
 
-    const errors = req.validationErrors();
-    if (errors) {
-       req.flash('Password Reset error', errors.map(err => err.msg))
-       res.render('resetpassword', {title: 'Rest Password', body: req.body, flashes: req.flash() })
-      return; // stop the fn from running
+  static addservice(req, res, next) {
+    const owner = AddService.findOne({ _id: req.prams.id });
+    if (owner.business._id !== req.user.businessId) {
+      return res.status(400).json({ message: 'Ypu are not the owner of the service' });
     }
-    next(); // there were no errors!
+    next();
   }
 
   static addProduct(req, res, next) {
@@ -88,8 +148,8 @@ class Validate {
 
     const errors = req.validationErrors();
     if (errors) {
-       req.flash('Add Product error', errors.map(err => err.msg))
-       res.render('productform', {title: 'Product Form', body: req.body, flashes: req.flash() })
+      req.flash('Add Product error', errors.map(err => err.msg));
+      res.render('productform', { title: 'Product Form', body: req.body, flashes: req.flash() });
       return; // stop the fn from running
     }
     next(); // there were no errors!
@@ -103,8 +163,8 @@ class Validate {
 
     const errors = req.validationErrors();
     if (errors) {
-       req.flash('Order Error', errors.map(err => err.msg))
-       res.render('orderservice', {title: 'Order Product', body: req.body, flashes: req.flash() })
+      req.flash('Order Error', errors.map(err => err.msg));
+      res.render('orderservice', { title: 'Order Product', body: req.body, flashes: req.flash() });
       return; // stop the fn from running
     }
     next(); // there were no errors!

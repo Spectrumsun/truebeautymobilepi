@@ -28,11 +28,13 @@
     "express-validator": "^5.0.3",
     "jsonwebtoken": "^8.1.0",
     "mongoose": "^5.0.11",
+    "mongoose-mongodb-errors": "0.0.2",
     "morgan": "^1.9.0",
     "nodemailer": "^4.4.2",
     "nodemailer-express-handlebars": "^3.0.0",
     "secure-password": "^3.0.0",
-    "swagger-ui-express": "^2.0.15"
+    "swagger-ui-express": "^2.0.15",
+    "validator": "^9.4.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

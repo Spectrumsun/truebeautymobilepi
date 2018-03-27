@@ -5,10 +5,9 @@ import morgan from 'morgan';
 import cors from 'cors';
 import path from 'path';
 import mongoose from 'mongoose';
-import routes from './routes/index';
 import expressValidator from 'express-validator';
+import routes from './routes/index';
 import errorHandlers from './handlers/errorHandlers';
-
 
 require('dotenv').config({ path: '.env' });
 

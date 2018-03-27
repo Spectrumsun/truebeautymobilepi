@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import crypto from 'crypto';
 
-const userSchema = mongoose.Schema({
+const businessSchema = mongoose.Schema({
   email: {
     type: String,
     unique: true,
@@ -9,9 +9,9 @@ const userSchema = mongoose.Schema({
     trim: true,
     required: 'Please Supply an email address',
   },
-  username: {
+  businessname: {
     type: String,
-    required: 'Please supply a username',
+    required: 'Please supply a Business Name',
     lowercase: true,
     trim: true,
     unique: true,
@@ -27,25 +27,34 @@ const userSchema = mongoose.Schema({
   },
   picture: {
     type: String,
-    default: 'picture.png',
     required: 'Add picture secure url',
   },
   pictureId: {
     type: String,
-    default: 'pictureid',
     required: 'Add picture public Id',
   },
-  address: {
+  available: {
     type: String,
-    required: 'Add your address',
+    required: 'Add availblity',
+  },
+  location: {
+    type: {
+      type: String,
+      default: 'Point',
+      required: 'Add location',
+    },
+    coordinates: [{
+      type: Number,
+      required: 'You must supply coordinates!',
+    }],
+    address: {
+      type: String,
+      required: 'You must supply an address!',
+    },
   },
   emailVerfication: {
     type: String,
     default: crypto.randomBytes(20).toString('hex'),
-  },
-  emailVerficationExpires: {
-    type: Date,
-    default: Date.now,
   },
   resetPasswordToken: String,
   resetPasswordExpires: Date,
@@ -55,13 +64,4 @@ const userSchema = mongoose.Schema({
   },
 });
 
-
-userSchema.post('save', (error, doc, next) => {
-  if (error.name === 'MongoError' && error.code === 11000) {
-    next(new Error('There was a duplicate key error'));
-  } else {
-    next(error);
-  }
-});
-
-export default mongoose.model('User', userSchema);
+export default mongoose.model('Business', businessSchema);
