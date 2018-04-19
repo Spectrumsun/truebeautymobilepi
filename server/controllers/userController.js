@@ -50,13 +50,7 @@ class Users {
   }
 
   static async userprofile(req, res) {
-    const user = await User.findOne({ _id: req.user._id }, {
-      password: 0,
-      emailVerfication: 0,
-      emailVerficationExpires: 0,
-      resetPasswordToken: 0,
-      resetPasswordExpires: 0,
-    });
+    const user = await User.find();
     res.status(200).json({
       message: 'successful',
       user,

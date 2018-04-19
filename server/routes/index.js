@@ -14,8 +14,7 @@ router.get('/', (req, res) => {
 
 // user router
 router.get(
-  '/user/profile/',
-  Auth.verifyToken,
+  '/users',
   userController.userprofile,
 );
 
